@@ -13,8 +13,6 @@ build:
 # The left-hand side is the name of the relationship as it will be exposed
 # to the application in the PLATFORM_RELATIONSHIPS variable. The right-hand
 # side is in the form `<service name>:<endpoint name>`.
-relationships:
-    database: "mysql:mysql"
 
 # The configuration of app when it is exposed to the web.
 web:
@@ -39,7 +37,8 @@ hooks:
     deploy: |
       set -e
       if [ $PLATFORM_ENVIRONMENT = "master" ] && [ ! -f app/database/.platform.installed ]; then
-        cp -R app/data app/database
+        cp -R app/data/* app/database
         touch app/database/.platform.installed
       fi
       app/console --env=prod cache:clear
+
