@@ -30,10 +30,16 @@ disk: 2048
 mounts:
     "/app/cache": "shared:files/cache"
     "/app/logs": "shared:files/logs"
+    "/app/database": "shared:files/database"
 
 # The hooks that will be performed when the package is deployed.
 hooks:
     build: |
       rm web/app_dev.php
     deploy: |
+      set -e
+      if [ $PLATFORM_ENVIRONMENT = "master" ] && [ ! -f app/database/.platform.installed ]; then
+        cp -R app/data app/database
+        touch app/database/.platform.installed
+      fi
       app/console --env=prod cache:clear
